@@ -52,7 +52,7 @@
 ### Datapath: ALU
 - The **ALU** performs arithmetic operations on two operands (register-register or register-immediate)
 - ![ALU](./Images/ALU.png)
-  - The 4-bit `ALU ope` controll signal is used to identify which specific ALU operation is to be performed (i.e. addition vs. and vs. or vs. etc.)
+  - The 4-bit `ALU ope` control signal is used to identify which specific ALU operation is to be performed (i.e. addition vs. and vs. or vs. etc.)
   - Since immediates are stored in the instruction itself, all 32-bits of the instruction are loaded into an Immediate Generator and the proper immediate is parsed
     - The sixth bit of the opcode is 0 for data transfer instructions and 1 for conditional branches
     - The fifth bit of the opcode is 0 for load instructions and 1 for store instructions
@@ -62,6 +62,13 @@
       - Both types are calculated because the controller signal indicating the type of operation may not be immediately available 
         - It is more time-efficient to calculate both and then wait for the signal to determine which one to select instead of first waiting and then calculating the immediate
     - The `MUX` connected to the ALU determines whether the operation is register-register or immediate-register, and this is determined by the `ALUSrc` controller signal
+- The ALU has its own controller to determine which operation to perform
+  - ![ALU Op Signals](./Images/ALUOp_Signals.png)
+  - The main controller makes decoding the ALU operation associated with an instruction much simpler by sending two bits the ALU controller
+    - For any non-R-type or non-I-type instructions that use addition (`lw`, `sw`), the `ALUOp` signal will send `00` to the ALU controller, which it will immediately understand indicates that there is addition and will therefore generate the addition ALU control input
+    - For `beq`, the `ALUOp` signal will send `01` to the ALU controller, which it will immediately understand indicates that there is subtraction and will therefore generate the subtraction ALU control input
+    - For R-type and I-type instructions, the `ALUOp` signal will send `10` and `11` respectively, which will indicate to the ALU controller that it should check the `funct3` and `funct7` fields to determine which specific operation to perform and generate the appropriate ALU control input
+    - This approach is faster since it allows for frequent operations (addition and subtraction) to be decoded quickly without the need to lookup and parse `funct3` and `funct7`
 ## Datapath: Memory
 - ![Memory](./Images/Datapath_Memory.png)
   - The ALU is used to perform the addition when calculating memory offsets since it already has access to the register data
@@ -82,3 +89,6 @@
 - Figuring out the current instruction is done based on the `opcode`, which acts similarly to a large switch case
   - Some instructions may have multiple candidates, so `funct3` and `funct7` is used to further decode the instruction - an example of this is the `ALU`
   - ![Control Signals Table](./Images/Control_Signals_Table.png)
+## Delay and Timing Concerns
+- Logic performed by the datapath and controller is done in *parallel* and *synchronously*, which is why understanding the timing for each component (each unit, controller, and memory) is important for determining how long it would take for an operation to successfully execute
+  - Having a clock cycle be *faster* than this time would result in correction issues
