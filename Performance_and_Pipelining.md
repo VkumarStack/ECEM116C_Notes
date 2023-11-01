@@ -1,7 +1,7 @@
 # Performance and Pipelining
 - The aforementioned single-cycle design is simple and easy to design but not necessarily the most efficient
   - This is because different instructions have different paths and hence different delays - the *longest path* is the **critical path** and determines the clock period
-- The critical path is typically the **load instruction** because it ust be from *instruction memory* to the *register file* to the *ALU* to the *data memory* and finally to the *register file*
+- The critical path is typically the **load instruction** because it must be from *instruction memory* to the *register file* to the *ALU* to the *data memory* and finally to the *register file*
 ## Performance and Metrics
 - **Latency** refers to how long it takes to finish a task (measured in seconds)
   - Lower latency is better
@@ -45,7 +45,19 @@
 - In a pipeline, intermediate values are stored in registers 
   - These registers are *not* the same as general-purpose registers
   - Referring to the diagram, these registers correspond to the intersection of the stages and the wiring (i.e. for the first stage, registers to store the current PC as well as the instruction; for the second stage, registers to store the PC value, `rs1`, `rs2`, and the generated immediate)
-- This approach allows for effectively a five times faster clock speed, since the clock cycle now only depends on the slowest stage (which is typically the memory stage)
+- This approach allows for effectively a five times faster clock speed, since the clock cycle now only depends on the slowest stage
   - As it is now, though, the instructions per cycle is actually decreased to now being 1/5th of an instruction per cycle (this can soon be improved back to 1 instruction per cycle by introducing concurrency in instructions)
 - There are five stages - *Instruction Fetch*, *Register Fetch*, *ALU Executon*, *Memory*, and *Writeback*
   - This division of stages is the most balanced
+- The main advantage of a pipelined design is the ability to *parallelize resources* - specifically, this is instruction-level parallelism (compared to thread-level parallelism)
+  - ![Pipeline Parallelism](./Images/Pipeline_Parallelism.png)
+  - This approach roughly allows for one instruction executed per cycle, but reduces the cycle time by a factor of five (5 stages) - this results in an overall efficiency increase by a factor of five
+- The control signals in a pipeline are also saved in registers, since cycles depend on control signals (and these signals will change per stage)
+  - ![Pipeline Controller](./Images/Pipeline_Controller.png)
+- The notion of a **half cycle** is relevant to registers
+  - For the writeback stage, the register is written to during the *first half*
+    - This write is done when the clock is *active*
+  - For the register file stage, the register is read from during the *second half*
+    - This read is done when the clock is *not active*
+  - ![Half Cycle](./Images/Half_Cycle.png)
+    - In the case where a register is being updated during the writeback of one instruction and simultaneously being read during the register file phase of another instruction, half cycle ensures correctness

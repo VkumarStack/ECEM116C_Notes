@@ -83,7 +83,7 @@
       - **SW**: Store word (32 bits)
       - **SB**: Store byte
       - **SH**: Store half word
-      - There is no need to worry about sign extension or padding on storage operations since data is not being 
+      - There is no need to worry about sign extension or padding on storage operations since data is only being stored to the necessary bytes (so storing a half word is only going to store at that half word location)
 - Instructions: 
   - **Arithmetic/ALU**
     - These operations perform an arithmetic operation on two registers or one register and an immediate and save the result in another register (destination)
@@ -122,4 +122,5 @@
       - The return address is also saved on the stack and recovered at the end (this supports nested procedure calls) 
     - The **caller** puts arguments on the stack and invokes the callee by using the call instruction
   - Assembly code is converted to **machine code**, which is readable by hardware, typically through the use of a table 
+- ![RISC Special Registers](./IMages/RISC_Special_Registers.png)
 - ![RISC Data Sizes](./Images/RISC_Data_Sizes.png)

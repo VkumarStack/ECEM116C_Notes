@@ -9,6 +9,7 @@
     - Some instructions require multiple registers
   - The size of the immediates vary depending on the type of instruction - some instructions (i.e. J-type) have more bits for immediates than others
     - The design philosophy is generally to fill whatever remaining space there is with immediates
+  - R-type corresponds to arithmetic operations that *do not use immediates*, I-type correspojnds to arithmetic operaitons that *do use immediates*, S-type corresponds to memory operations, B-type corresponds to branching operations, and J-type corresponds to jump operations
   - ![RISC Base Instruction Set](./Images/RISC_Base_Instruction_Set.png)
 ## Microarchitecture
 - The hardware implementation of the ISA (the aforementioned instructions) is known as the **microarchitecture**
@@ -32,4 +33,4 @@
   - **Static RAM** (SRAM) are relatively fast, but can only read/write one data word at a time and are expensive (one bit ~ 6+ transistors)
   - **Dynamic RAM** (DRAM) is relatively slower, able to read/write one data word at a time (and reading destroys the content, which requires the need for a refresh) - however it is cheap (one bit ~ one transistor plus a capacitor)
   - **DISK** (flash memory, hard disk) is much slower and is very cheap
-- A combination of memory technologies (**memory hierarchy**) - 
+- A combination of memory technologies (**memory hierarchy**)

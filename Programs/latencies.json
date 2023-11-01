@@ -1,0 +1,14 @@
+{
+  "Mem_Read": 330,
+  "Reg_Read": 150,
+  "Reg_Write": 10,
+  "MUX": 35,
+  "ALU": 200,
+  "Gate": 5,
+  "Imm_Gen": 45,
+  "PC_Read": 20,
+  "Adder": 155,
+  "PC_Write": 10,
+  "Mem_Write": 15,
+  "Control" : 60 
+}

@@ -45,7 +45,7 @@
 ### Datapath: nextPC
 - ![Next PC](./Images/Next_PC.png)
   - Registers are edge-triggered, so at the next positive edge of the clock, the PC gets its new value
-    - There is still potentially a propagation delay from the PC to the adder as well as the length of the adder back to the PC, wand this delay is proportional to the length of the wire from the PC to adder
+    - There is still potentially a propagation delay from the PC to the adder as well as the length of the adder back to the PC, and this delay is proportional to the length of the wire from the PC to adder
       - $t_{pc} = t_{wire} + t_{adder} + t_{wire}$
       - Physically keeping these components as close as possible is very important
   - This does not account for branching *yet*
@@ -83,7 +83,7 @@
   - To also account for branch logic, the ALU has a `Zero` flag bit, which is set whenever `rs1 - rs2 == 0`
   - If this flag is true, then `BEQ` can be performed and the offset immediate can be sent to the branch adder (shifted left by 1 since addresses must be even) and then added with the current program counter
   - A controller signal `PCSrc` then determines whether the operation is a branch operation and, if so, set the new program counter to `pc + immediate` (instead of `pc + 4`)
-    - in practice, `PCSrc` is determined by the logical AND of the `Zero` flag and `Branch` flag of the controller
+    - In practice, `PCSrc` is determined by the logical AND of the `Zero` flag and `Branch` flag of the controller
 ## Designing a Finite State Machine
 - When creating a finite state machine, everything should *first* be assigned to zero (active low) and then, based on the instruction (opcode) and current state, some control signals should be changed
 - Figuring out the current instruction is done based on the `opcode`, which acts similarly to a large switch case
@@ -92,3 +92,4 @@
 ## Delay and Timing Concerns
 - Logic performed by the datapath and controller is done in *parallel* and *synchronously*, which is why understanding the timing for each component (each unit, controller, and memory) is important for determining how long it would take for an operation to successfully execute
   - Having a clock cycle be *faster* than this time would result in correction issues
+  - This implies that the clock cycle must be slow enough to account for the slowest **critical path**, which is often the load word instruction
